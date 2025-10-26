@@ -97,7 +97,11 @@ A Promise can be in three states:
 
 Once a promise is resolved or rejected, its state can’t change again.
 
-<br/>
+<hr/>
+
+## 💡 Example: Chaining Promises
+
+You can chain .then() calls to run sequential tasks:
 
 ## PreLoadingImage.jsx
 
