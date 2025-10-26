@@ -103,6 +103,136 @@ Once a promise is resolved or rejected, its state can’t change again.
 
 You can chain .then() calls to run sequential tasks:
 
+```js
+new Promise((resolve) => {
+  resolve(10);
+})
+  .then((num) => {
+    console.log(num); // 10
+    return num * 2;
+  })
+  .then((num) => {
+    console.log(num); // 20
+    return num * 3;
+  })
+  .then((num) => {
+    console.log(num); // 60
+  });
+```
+
+## 🧩 Promise.all, Promise.race, and friends
+
+These are static methods on the Promise class for working with multiple promises.
+
+1️⃣ Promise.all([p1, p2, p3])
+
+Waits for all promises to resolve (or rejects if one fails).
+
+```js
+Promise.all([
+  Promise.resolve("A"),
+  Promise.resolve("B"),
+  Promise.resolve("C")
+]).then((results) => console.log(results));
+```
+
+output:
+
+```js
+["A", "B", "C"];
+```
+
+if one rejects
+
+```js
+Promise.all([
+  Promise.resolve("A"),
+  Promise.reject("Error"),
+  Promise.resolve("C")
+]).catch(console.log);
+```
+
+Output:
+
+```js
+Error;
+```
+
+## 2️⃣ Promise.allSettled([p1, p2])
+
+Waits for all to finish, no matter success or failure.
+
+```js
+Promise.allSettled([Promise.resolve("OK"), Promise.reject("Oops")]).then(
+  console.log
+);
+```
+
+Output:
+
+```js
+[
+  { status: "fulfilled", value: "OK" },
+  { status: "rejected", reason: "Oops" }
+];
+```
+
+## 3️⃣ Promise.race([p1, p2])
+
+Returns the result of the first promise to settle (resolve or reject).
+
+Example:
+
+```js
+Promise.race([
+  new Promise((res) => setTimeout(() => res("First!"), 1000)),
+  new Promise((res) => setTimeout(() => res("Second!"), 2000))
+]).then(console.log);
+```
+
+Output After 1s : `First!`
+
+## 4️⃣ Promise.any([p1, p2])
+
+Returns the first fulfilled promise (ignores rejections).
+
+Example:
+
+```js
+Promise.any([
+  Promise.reject("Fail 1"),
+  Promise.resolve("Success!"),
+  Promise.reject("Fail 2")
+]).then(console.log);
+```
+
+output: `Success!`
+
+| Mistake                                     | Why it’s bad           | Fix                              |
+| ------------------------------------------- | ---------------------- | -------------------------------- |
+| Forgetting to return a Promise in `.then()` | Chain breaks           | Always `return` inside `.then()` |
+| Not handling `.catch()`                     | Silent errors          | Always handle rejections         |
+| Mixing callbacks + Promises                 | Confusing control flow | Stick to one pattern             |
+| Blocking code inside Promise                | Kills async nature     | Avoid long loops/sync waits      |
+
+## Quick Recap
+
+| Concept            | Meaning                             |
+| ------------------ | ----------------------------------- |
+| **Promise**        | A future value (success or failure) |
+| **resolve()**      | Mark success                        |
+| **reject()**       | Mark failure                        |
+| **.then()**        | Handle success                      |
+| **.catch()**       | Handle error                        |
+| **.finally()**     | Run after both                      |
+| **async/await**    | Cleaner syntax for promises         |
+| **Promise.all()**  | Wait for all                        |
+| **Promise.race()** | Wait for first                      |
+| **Promise.any()**  | Wait for first success              |
+
+<hr/>
+<hr/>
+
 ## PreLoadingImage.jsx
 
 let’s unpack exactly what’s happening inside Promise.all([...]) and the preloadImages helper, step-by-step, with clear examples, failure modes, and nicer alternatives you can plug into your app.
